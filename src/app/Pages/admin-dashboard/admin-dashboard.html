@@ -26,13 +26,14 @@
   <!-- Modal: Add/Edit Project -->
   <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
+      <div class="modal-content" data-aos="zoom-in" data-aos-duration="300">
+        <div class="modal-header justify-content-between">
           <h5 class="modal-title" id="projectModalLabel">{{ editingId ? 'تعديل مشروع' : 'إضافة مشروع جديد' }}</h5>
-          <button type="button" class="btn-close" aria-label="Close" (click)="cancelEdit()"></button>
+          <button type="button" class="btn-close m-0" aria-label="Close" (click)="cancelEdit()"></button>
         </div>
         <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
           <div class="modal-body">
+            <p class="modal-desc mb-3">أدخل تفاصيل المشروع ثم اضغط حفظ لإتمام العملية.</p>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">عنوان المشروع</label>
@@ -70,7 +71,7 @@
           <div class="modal-footer d-flex gap-2 flex-wrap">
             <button class="btn btn-secondary" type="button" (click)="cancelEdit()">إلغاء</button>
             <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-              <i class="fas fa-save ms-1"></i> {{ editingId ? 'تحديث المشروع' : 'إضافة المشروع' }}
+              <i class="fas fa-save ms-1"></i> {{ editingId ? 'حفظ' : 'إرسال' }}
             </button>
           </div>
         </form>

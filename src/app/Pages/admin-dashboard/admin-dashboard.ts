@@ -167,6 +167,15 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     if (!el || typeof bootstrap === 'undefined') return;
     this.projectModal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
     this.projectModal.show();
+    setTimeout(() => {
+      try {
+        if (AOS && typeof (AOS as any).refreshHard === 'function') {
+          (AOS as any).refreshHard();
+        } else if (AOS && typeof (AOS as any).refresh === 'function') {
+          (AOS as any).refresh();
+        }
+      } catch {}
+    }, 50);
   }
 
   private closeProjectModal(): void {
