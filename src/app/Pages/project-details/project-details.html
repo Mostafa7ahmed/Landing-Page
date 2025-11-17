@@ -9,8 +9,7 @@
       <h1 class="display-5 mb-3">{{ project.title }}</h1>
       <p class="lead mb-4">{{ project.intro }}</p>
       <div class="d-flex flex-wrap gap-2">
-        <a class="btn btn-primary" [href]="project.website" target="_blank" rel="noopener">زيارة الموقع</a>
-        <a class="btn btn-secondary" [href]="project.download" target="_blank" rel="noopener">تحميل التطبيق</a>
+        <a class="btn btn-primary" *ngIf="project.link" [href]="project.link" target="_blank" rel="noopener">زيارة الموقع</a>
       </div>
     </div>
   </div>
@@ -55,7 +54,7 @@
   <div class="container">
     <h2 class="section-title text-center mb-4 text-black" data-aos="fade-up">معرض الصور</h2>
     <div class="row g-3">
-      <div class="col-6 col-md-4" *ngFor="let img of project.screenshots; let i = index" data-aos="zoom-in" [attr.data-aos-delay]="i * 50">
+      <div class="col-6 col-md-4" *ngFor="let img of project.gallery; let i = index" data-aos="zoom-in" [attr.data-aos-delay]="i * 50">
         <div class="screenshot">
           <img [src]="img" class="img-fluid rounded" alt="لقطة شاشة">
         </div>

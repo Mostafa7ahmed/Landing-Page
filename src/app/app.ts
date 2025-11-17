@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { Navbar } from './Layout/navbar/navbar';
 import { Footer } from './Layout/footer/footer';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +12,5 @@ import { Footer } from './Layout/footer/footer';
   styleUrl: './app.scss'
 })
 export class App {
+
 }

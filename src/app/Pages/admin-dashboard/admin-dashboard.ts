@@ -10,7 +10,8 @@ interface Project {
   id: string;
   title: string;
   description: string;
-  image: string; // base64 or url
+  cover: string; // base64 or url
+  gallery: string[]; // additional images
   link?: string;
 }
 
@@ -35,7 +36,8 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
-      image: ['', [Validators.required]],
+      cover: ['', [Validators.required]],
+      gallery: [[]],
       link: ['']
     });
   }
@@ -58,7 +60,7 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     );
   }
 
-  onImageSelected(event: Event): void {
+  onCoverSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files && input.files[0];
     if (!file) return;
@@ -66,9 +68,29 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = reader.result as string;
-      this.form.get('image')?.setValue(base64);
+      this.form.get('cover')?.setValue(base64);
     };
     reader.readAsDataURL(file);
+  }
+
+  onGallerySelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    if (!files || files.length === 0) return;
+
+    const existing: string[] = (this.form.get('gallery')?.value || []) as string[];
+    const readers: Promise<string>[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      readers.push(new Promise<string>((resolve) => {
+        const r = new FileReader();
+        r.onload = () => resolve(r.result as string);
+        r.readAsDataURL(f);
+      }));
+    }
+    Promise.all(readers).then(base64s => {
+      this.form.get('gallery')?.setValue([...existing, ...base64s]);
+    });
   }
 
   submit(): void {
@@ -79,7 +101,7 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     if (this.editingId) {
       const idx = this.projects.findIndex(p => p.id === this.editingId);
       if (idx > -1) {
-        this.projects[idx] = { id: this.editingId, ...value };
+        this.projects[idx] = { id: this.editingId, ...value } as Project;
       }
       this.saveProjects();
       this.closeProjectModal();
@@ -93,7 +115,7 @@ export class AdminDashboard implements OnInit, AfterViewInit {
       }
     } else {
       const id = Date.now().toString();
-      this.projects.unshift({ id, ...value });
+      this.projects.unshift({ id, ...value } as Project);
       this.saveProjects();
       this.closeProjectModal();
       if (typeof Swal !== 'undefined') {
@@ -113,7 +135,8 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     this.form.patchValue({
       title: p.title,
       description: p.description,
-      image: p.image,
+      cover: p.cover,
+      gallery: p.gallery || [],
       link: p.link || ''
     });
     this.openProjectModal();
@@ -157,6 +180,12 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     this.editingId = null;
   }
 
+  removeGalleryImage(index: number): void {
+    const g: string[] = (this.form.get('gallery')?.value || []) as string[];
+    g.splice(index, 1);
+    this.form.get('gallery')?.setValue([...g]);
+  }
+
   openAddModal(): void {
     this.resetForm();
     this.openProjectModal();
@@ -188,7 +217,22 @@ export class AdminDashboard implements OnInit, AfterViewInit {
     try {
       const raw = localStorage.getItem(this.STORAGE_KEY);
       if (raw) {
-        this.projects = JSON.parse(raw) as Project[];
+        const parsed = JSON.parse(raw) as any[];
+        // migrate older schema (image -> cover, ensure gallery)
+        this.projects = parsed.map((p: any) => {
+          const cover = p.cover ?? p.image ?? '';
+          const gallery = Array.isArray(p.gallery) ? p.gallery : [];
+          const migrated: Project = {
+            id: String(p.id ?? Date.now()),
+            title: p.title ?? '',
+            description: p.description ?? '',
+            cover,
+            gallery,
+            link: p.link ?? undefined
+          };
+          return migrated;
+        });
+        this.saveProjects();
       } else {
         // seed with few examples to start with
         this.projects = [
@@ -196,21 +240,24 @@ export class AdminDashboard implements OnInit, AfterViewInit {
             id: '1',
             title: 'منصة تجارة إلكترونية',
             description: 'منصة احترافية تدعم الدفع الإلكتروني وإدارة المنتجات والمخزون والتحليلات.',
-            image: 'Image/genisis.png',
+            cover: 'Image/genisis.png',
+            gallery: ['Image/genisis.png', 'Image/hero.jpg'],
             link: '#'
           },
           {
             id: '2',
             title: 'تطبيق حجوزات',
             description: 'تطبيق لحجز المواعيد وإدارة الجداول مع إشعارات فورية وتقويم متكامل.',
-            image: 'Image/hero.jpg',
+            cover: 'Image/hero.jpg',
+            gallery: ['Image/hero.jpg', 'Image/genisis.png'],
             link: '#'
           },
           {
             id: '3',
             title: 'نظام إدارة مهام',
             description: 'لوحة مهام مع تتبع تقدم الأعمال، مهام فرعية، وتعليقات وإرفاق ملفات.',
-            image: 'Image/genisis.png',
+            cover: 'Image/genisis.png',
+            gallery: ['Image/genisis.png'],
             link: '#'
           }
         ];
