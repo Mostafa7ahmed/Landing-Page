@@ -82,8 +82,8 @@
               </div>
               <div class="col-8">
                 <div class="card-body">
-                  <h6 class="card-title mb-1">{{ p.title }}</h6>
-                  <p class="card-text small text-truncate-3">{{ p.description }}</p>
+                  <h6 class="card-title mb-1 text-white">{{ p.title }}</h6>
+                  <p class="card-text small text-truncate-3 text-white">{{ p.description }}</p>
                   <div class="d-flex gap-2 flex-wrap">
                     <a *ngIf="p.link" class="btn btn-sm btn-outline-light" [href]="p.link" target="_blank" rel="noopener">رابط</a>
                     <button class="btn btn-sm btn-warning" (click)="edit(p)"><i class="fas fa-edit ms-1"></i> تعديل</button>
