@@ -18,6 +18,10 @@ export const routes: Routes = [
         loadComponent: () => import('./Pages/project-details/project-details').then(m => m.ProjectDetails)
     },
     {
+        path: 'admin',
+        loadComponent: () => import('./Pages/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard)
+    },
+    {
         path: '',
         pathMatch: 'full',
         redirectTo: 'home'

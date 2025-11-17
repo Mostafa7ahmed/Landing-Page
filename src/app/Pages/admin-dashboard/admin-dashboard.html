@@ -1,0 +1,138 @@
+<section class="admin-container container py-5">
+  <div class="mb-4" data-aos="fade-up">
+    <h2 class="section-title">لوحة التحكم - إدارة المشاريع</h2>
+    <p class="text-muted">إضافة، تعديل، وحذف المشاريع بسهولة.</p>
+  </div>
+
+  <div class="row g-4 align-items-end" data-aos="fade-up" data-aos-delay="100">
+    <div class="col-lg-8">
+      <div class="input-group search-bar">
+        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="fas fa-search"></i></span>
+        <input type="text" class="form-control" [formControl]="searchControl" placeholder="ابحث عن مشروع بالعنوان أو الوصف..." />
+      </div>
+    </div>
+    <div class="col-lg-4 text-lg-start text-center">
+      <span class="badge bg-secondary text-dark px-3 py-2">
+        عدد المشاريع: {{ filteredProjects.length }}
+      </span>
+    </div>
+  </div>
+
+  <div class="card mt-4 admin-form" data-aos="fade-up" data-aos-delay="150">
+    <div class="card-body">
+      <h5 class="card-title mb-3">{{ editingId ? 'تعديل مشروع' : 'إضافة مشروع جديد' }}</h5>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">عنوان المشروع</label>
+            <input type="text" class="form-control" formControlName="title" placeholder="أدخل عنوان المشروع">
+            <div class="form-text text-danger" *ngIf="form.get('title')?.touched && form.get('title')?.invalid">
+              العنوان مطلوب ويجب ألا يقل عن 3 أحرف.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">الرابط (اختياري)</label>
+            <input type="url" class="form-control" formControlName="link" placeholder="ضع رابط المشروع إن وجد">
+          </div>
+          <div class="col-12">
+            <label class="form-label">وصف المشروع</label>
+            <textarea rows="3" class="form-control" formControlName="description" placeholder="أدخل وصفًا موجزًا للمشروع"></textarea>
+            <div class="form-text text-danger" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
+              الوصف مطلوب ويجب ألا يقل عن 10 أحرف.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">صورة المشروع</label>
+            <input type="file" accept="image/*" class="form-control" (change)="onImageSelected($event)">
+            <div class="form-text text-danger" *ngIf="form.get('image')?.touched && form.get('image')?.invalid">
+              الصورة مطلوبة.
+            </div>
+          </div>
+          <div class="col-md-6" *ngIf="form.get('image')?.value as img">
+            <label class="form-label">معاينة</label>
+            <div class="preview border rounded p-2">
+              <img [src]="img" alt="Preview" class="img-fluid rounded" />
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 d-flex gap-2 flex-wrap">
+          <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+            <i class="fas fa-save ms-1"></i> {{ editingId ? 'تحديث المشروع' : 'إضافة المشروع' }}
+          </button>
+          <button class="btn btn-secondary" type="button" *ngIf="editingId" (click)="cancelEdit()">
+            إلغاء
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="mt-5" data-aos="fade-up" data-aos-delay="200">
+    <h5 class="mb-3">قائمة المشاريع</h5>
+
+    <!-- Cards on small screens -->
+    <div class="d-block d-md-none">
+      <div class="row g-3">
+        <div class="col-12" *ngFor="let p of filteredProjects; trackBy: trackById">
+          <div class="card project-card h-100">
+            <div class="row g-0">
+              <div class="col-4">
+                <img [src]="p.image" class="img-fluid h-100 w-100 rounded-start object-fit-cover" alt="صورة المشروع" />
+              </div>
+              <div class="col-8">
+                <div class="card-body">
+                  <h6 class="card-title mb-1">{{ p.title }}</h6>
+                  <p class="card-text small text-truncate-3">{{ p.description }}</p>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <a *ngIf="p.link" class="btn btn-sm btn-outline-light" [href]="p.link" target="_blank" rel="noopener">رابط</a>
+                    <button class="btn btn-sm btn-warning" (click)="edit(p)"><i class="fas fa-edit ms-1"></i> تعديل</button>
+                    <button class="btn btn-sm btn-danger" (click)="delete(p)"><i class="fas fa-trash ms-1"></i> حذف</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="filteredProjects.length === 0" class="text-center text-muted py-4">لا توجد نتائج مطابقة.</div>
+      </div>
+    </div>
+
+    <!-- Table on md and up -->
+    <div class="table-responsive d-none d-md-block">
+      <table class="table table-dark table-striped align-middle">
+        <thead>
+          <tr>
+            <th>الصورة</th>
+            <th>العنوان</th>
+            <th>الوصف</th>
+            <th>الرابط</th>
+            <th class="text-nowrap">الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of filteredProjects; trackBy: trackById">
+            <td style="width:120px;">
+              <img [src]="p.image" class="img-thumbnail" style="max-width: 110px; height: 70px; object-fit: cover;" alt="صورة المشروع" />
+            </td>
+            <td class="fw-semibold">{{ p.title }}</td>
+            <td><div class="text-truncate-2">{{ p.description }}</div></td>
+            <td>
+              <a *ngIf="p.link" [href]="p.link" target="_blank" rel="noopener" class="btn btn-sm btn-outline-light">فتح</a>
+              <span *ngIf="!p.link" class="text-muted">—</span>
+            </td>
+            <td>
+              <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-sm btn-warning" (click)="edit(p)"><i class="fas fa-edit ms-1"></i> تعديل</button>
+                <button class="btn btn-sm btn-danger" (click)="delete(p)"><i class="fas fa-trash ms-1"></i> حذف</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredProjects.length === 0">
+            <td colspan="5" class="text-center text-muted py-4">لا توجد نتائج مطابقة.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
