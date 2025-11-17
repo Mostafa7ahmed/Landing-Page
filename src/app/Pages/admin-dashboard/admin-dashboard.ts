@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import * as AOS from 'aos';
 
+declare const Swal: any;
+declare const bootstrap: any;
+
 interface Project {
   id: string;
   title: string;
@@ -24,6 +27,7 @@ export class AdminDashboard implements OnInit, AfterViewInit {
 
   projects: Project[] = [];
   editingId: string | null = null;
+  private projectModal: any = null;
 
   private readonly STORAGE_KEY = 'admin_projects';
 
@@ -77,12 +81,30 @@ export class AdminDashboard implements OnInit, AfterViewInit {
       if (idx > -1) {
         this.projects[idx] = { id: this.editingId, ...value };
       }
+      this.saveProjects();
+      this.closeProjectModal();
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'تم التحديث',
+          text: 'تم تحديث بيانات المشروع بنجاح',
+          icon: 'success',
+          confirmButtonText: 'حسناً'
+        });
+      }
     } else {
       const id = Date.now().toString();
       this.projects.unshift({ id, ...value });
+      this.saveProjects();
+      this.closeProjectModal();
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'تمت الإضافة',
+          text: 'تم إضافة المشروع بنجاح',
+          icon: 'success',
+          confirmButtonText: 'حسناً'
+        });
+      }
     }
-
-    this.saveProjects();
     this.resetForm();
   }
 
@@ -94,18 +116,36 @@ export class AdminDashboard implements OnInit, AfterViewInit {
       image: p.image,
       link: p.link || ''
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.openProjectModal();
   }
 
   cancelEdit(): void {
     this.resetForm();
+    this.closeProjectModal();
   }
 
   delete(p: Project): void {
-    const ok = confirm('هل أنت متأكد من حذف هذا المشروع؟');
-    if (!ok) return;
-    this.projects = this.projects.filter(x => x.id !== p.id);
-    this.saveProjects();
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: 'لن تتمكن من التراجع عن هذه العملية',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'نعم، احذف',
+        cancelButtonText: 'إلغاء'
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          this.projects = this.projects.filter(x => x.id !== p.id);
+          this.saveProjects();
+          Swal.fire({ title: 'تم الحذف', text: 'تم حذف المشروع بنجاح', icon: 'success', confirmButtonText: 'حسناً' });
+        }
+      });
+    } else {
+      const ok = confirm('هل أنت متأكد من حذف هذا المشروع؟');
+      if (!ok) return;
+      this.projects = this.projects.filter(x => x.id !== p.id);
+      this.saveProjects();
+    }
   }
 
   trackById(_index: number, item: Project): string {
@@ -115,6 +155,24 @@ export class AdminDashboard implements OnInit, AfterViewInit {
   private resetForm(): void {
     this.form.reset();
     this.editingId = null;
+  }
+
+  openAddModal(): void {
+    this.resetForm();
+    this.openProjectModal();
+  }
+
+  private openProjectModal(): void {
+    const el = document.getElementById('projectModal');
+    if (!el || typeof bootstrap === 'undefined') return;
+    this.projectModal = new bootstrap.Modal(el, { backdrop: 'static', keyboard: false });
+    this.projectModal.show();
+  }
+
+  private closeProjectModal(): void {
+    if (this.projectModal) {
+      this.projectModal.hide();
+    }
   }
 
   private loadProjects(): void {

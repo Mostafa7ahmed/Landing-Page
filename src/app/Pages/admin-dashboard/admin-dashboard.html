@@ -11,60 +11,70 @@
         <input type="text" class="form-control" [formControl]="searchControl" placeholder="ابحث عن مشروع بالعنوان أو الوصف..." />
       </div>
     </div>
-    <div class="col-lg-4 text-lg-start text-center">
+    <div class="col-lg-4 text-center d-flex  justify-content-between align-items-center">
       <span class="badge bg-secondary text-dark px-3 py-2">
         عدد المشاريع: {{ filteredProjects.length }}
       </span>
+      <div class="d-flex gap-2 justify-content-lg-start justify-content-center mt-3 mt-lg-2">
+        <button class="btn btn-primary" type="button" (click)="openAddModal()">
+          <i class="fas fa-plus ms-1"></i> مشروع جديد
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="card mt-4 admin-form" data-aos="fade-up" data-aos-delay="150">
-    <div class="card-body">
-      <h5 class="card-title mb-3">{{ editingId ? 'تعديل مشروع' : 'إضافة مشروع جديد' }}</h5>
-
-      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">عنوان المشروع</label>
-            <input type="text" class="form-control" formControlName="title" placeholder="أدخل عنوان المشروع">
-            <div class="form-text text-danger" *ngIf="form.get('title')?.touched && form.get('title')?.invalid">
-              العنوان مطلوب ويجب ألا يقل عن 3 أحرف.
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">الرابط (اختياري)</label>
-            <input type="url" class="form-control" formControlName="link" placeholder="ضع رابط المشروع إن وجد">
-          </div>
-          <div class="col-12">
-            <label class="form-label">وصف المشروع</label>
-            <textarea rows="3" class="form-control" formControlName="description" placeholder="أدخل وصفًا موجزًا للمشروع"></textarea>
-            <div class="form-text text-danger" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
-              الوصف مطلوب ويجب ألا يقل عن 10 أحرف.
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">صورة المشروع</label>
-            <input type="file" accept="image/*" class="form-control" (change)="onImageSelected($event)">
-            <div class="form-text text-danger" *ngIf="form.get('image')?.touched && form.get('image')?.invalid">
-              الصورة مطلوبة.
-            </div>
-          </div>
-          <div class="col-md-6" *ngIf="form.get('image')?.value as img">
-            <label class="form-label">معاينة</label>
-            <div class="preview border rounded p-2">
-              <img [src]="img" alt="Preview" class="img-fluid rounded" />
-            </div>
-          </div>
+  <!-- Modal: Add/Edit Project -->
+  <div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="projectModalLabel">{{ editingId ? 'تعديل مشروع' : 'إضافة مشروع جديد' }}</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="cancelEdit()"></button>
         </div>
-        <div class="mt-4 d-flex gap-2 flex-wrap">
-          <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
-            <i class="fas fa-save ms-1"></i> {{ editingId ? 'تحديث المشروع' : 'إضافة المشروع' }}
-          </button>
-          <button class="btn btn-secondary" type="button" *ngIf="editingId" (click)="cancelEdit()">
-            إلغاء
-          </button>
-        </div>
-      </form>
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">عنوان المشروع</label>
+                <input type="text" class="form-control" formControlName="title" placeholder="أدخل عنوان المشروع">
+                <div class="form-text text-danger" *ngIf="form.get('title')?.touched && form.get('title')?.invalid">
+                  العنوان مطلوب ويجب ألا يقل عن 3 أحرف.
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">الرابط (اختياري)</label>
+                <input type="url" class="form-control" formControlName="link" placeholder="ضع رابط المشروع إن وجد">
+              </div>
+              <div class="col-12">
+                <label class="form-label">وصف المشروع</label>
+                <textarea rows="3" class="form-control" formControlName="description" placeholder="أدخل وصفًا موجزًا للمشروع"></textarea>
+                <div class="form-text text-danger" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
+                  الوصف مطلوب ويجب ألا يقل عن 10 أحرف.
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">صورة المشروع</label>
+                <input type="file" accept="image/*" class="form-control" (change)="onImageSelected($event)">
+                <div class="form-text text-danger" *ngIf="form.get('image')?.touched && form.get('image')?.invalid">
+                  الصورة مطلوبة.
+                </div>
+              </div>
+              <div class="col-md-6" *ngIf="form.get('image')?.value as img">
+                <label class="form-label">معاينة</label>
+                <div class="preview border rounded p-2">
+                  <img [src]="img" alt="Preview" class="img-fluid rounded" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer d-flex gap-2 flex-wrap">
+            <button class="btn btn-secondary" type="button" (click)="cancelEdit()">إلغاء</button>
+            <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+              <i class="fas fa-save ms-1"></i> {{ editingId ? 'تحديث المشروع' : 'إضافة المشروع' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
