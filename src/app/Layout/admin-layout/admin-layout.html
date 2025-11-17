@@ -1,0 +1,22 @@
+<header class="admin-header py-3">
+  <div class="container d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+     <img src="logo.png" alt="" height="80">
+      <span class="brand-name">لوحة الإدارة</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a class="btn btn-outline-light" routerLink="/home">
+        <i class="fas fa-home ms-1"></i> الرئيسية
+      </a>
+      <button class="btn btn-danger" (click)="logout()">
+        <i class="fas fa-sign-out-alt ms-1"></i> تسجيل الخروج
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="admin-main py-4">
+  <div class="container">
+    <router-outlet />
+  </div>
+</main>

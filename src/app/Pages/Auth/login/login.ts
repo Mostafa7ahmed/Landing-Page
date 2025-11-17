@@ -2,17 +2,19 @@ import { Component } from '@angular/core';
 import { LoginService } from '../../../Core/service/login';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ReactiveModeuls } from '../../../Shared/Modules/ReactiveForms.module';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [...ReactiveModeuls],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
 export class Login {
-   loginForm: any; 
+  loginForm: any;
 
-  constructor(private fb: FormBuilder, private loginService: LoginService) {}
+  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router) { }
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -23,11 +25,9 @@ export class Login {
 
   onLogin() {
     if (this.loginForm.valid) {
-      this.loginService.login(this.loginForm.value)
-        .subscribe((res: any) => {
-          this.loginService.saveToken(res.token);
-          console.log('Logged in successfully ✅');
-        });
+      localStorage.setItem('UserAuth', '1'); 
+      this.router.navigate(['/admin']);
+
     }
   }
 

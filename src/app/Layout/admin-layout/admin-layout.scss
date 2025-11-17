@@ -1,0 +1,21 @@
+.admin-header {
+  background-color: var(--card-bg-color);
+  color: var(--light-text-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-header .brand-name {
+  font-weight: 700;
+  color: var(--light-text-color);
+}
+
+.admin-header .logo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.admin-main {
+  min-height: calc(100vh - 80px);
+}
