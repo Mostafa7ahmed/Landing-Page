@@ -14,6 +14,10 @@ export const routes: Routes = [
         canActivate: [isAuthGuard]
     },
     {
+        path: 'project/:id',
+        loadComponent: () => import('./Pages/project-details/project-details').then(m => m.ProjectDetails)
+    },
+    {
         path: '',
         pathMatch: 'full',
         redirectTo: 'home'

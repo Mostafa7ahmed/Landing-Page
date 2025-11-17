@@ -1,0 +1,77 @@
+<section class="project-hero d-flex align-items-end" [ngStyle]="{'background-image': 'url(' + project.cover + ')'}">
+  <div class="overlay"></div>
+  <div class="container position-relative py-5">
+    <a class="btn btn-light back-btn" [routerLink]="['/home']" [fragment]="'projects'">
+      <i class="fas fa-arrow-right ms-2"></i>
+      رجوع إلى المشاريع
+    </a>
+    <div class="hero-content" data-aos="fade-up">
+      <h1 class="display-5 mb-3">{{ project.title }}</h1>
+      <p class="lead mb-4">{{ project.intro }}</p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" [href]="project.website" target="_blank" rel="noopener">زيارة الموقع</a>
+        <a class="btn btn-secondary" [href]="project.download" target="_blank" rel="noopener">تحميل التطبيق</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-8" data-aos="fade-up">
+        <h2 class="section-title mb-3">الوصف التفصيلي</h2>
+        <p class="mb-4">{{ project.description }}</p>
+
+        <h3 class="h4 mb-3">المزايا الرئيسية</h3>
+        <ul class="list-unstyled feature-list">
+          <li *ngFor="let f of project.features">
+            <i class="fas fa-check-circle text-success ms-2"></i>
+            {{ f }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-left">
+        <div class="card tech-card">
+          <div class="card-body">
+            <h3 class="h5 mb-3">التقنيات المستخدمة</h3>
+            <div class="d-flex flex-wrap gap-3">
+              <div class="d-flex align-items-center gap-2 tech-item" *ngFor="let t of project.technologies">
+                <i [class]="t.icon + ' fa-2x'"></i>
+                <span>{{ t.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-4" data-aos="fade-left" data-aos-delay="100">
+          <div class="card-body">
+            <h3 class="h5 mb-3">الجدول الزمني / خطوات العمل</h3>
+            <ul class="timeline list-unstyled m-0">
+              <li class="timeline-item" *ngFor="let s of project.steps" [attr.data-step]="s.step">
+                <div class="timeline-content">
+                  <div class="fw-bold">{{ s.title }}</div>
+                  <div class="small-2">{{ s.text }}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-4" data-aos="fade-up">معرض الصور</h2>
+    <div class="row g-3">
+      <div class="col-6 col-md-4" *ngFor="let img of project.screenshots; let i = index" data-aos="zoom-in" [attr.data-aos-delay]="i * 50">
+        <div class="screenshot">
+          <img [src]="img" class="img-fluid rounded" alt="لقطة شاشة">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
