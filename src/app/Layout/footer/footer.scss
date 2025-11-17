@@ -3,4 +3,24 @@
   color: var(--text-color);
   padding: 2rem 0;
   border-top: 1px solid var(--card-bg-color);
+  .footer-brand {
+    color: var(--light-text-color);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: .25rem;
+  }
+  .footer-rights {
+    color: var(--text-color);
+    font-size: .95rem;
+  }
+  .footer-email {
+    .label { color: var(--light-text-color); font-weight: 700; margin-left: .5rem; }
+    a { color: var(--secondary-color); font-weight: 700; }
+    a:hover { color: color-mix(in srgb, var(--secondary-color), black 10%); }
+  }
+  .footer-socials a {
+    color: var(--light-text-color);
+    font-size: 1.125rem;
+  }
+  .footer-socials a:hover { color: var(--secondary-color); }
 }

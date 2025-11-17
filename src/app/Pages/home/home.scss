@@ -167,3 +167,9 @@ section {
 .contact-details i {
     color: var(--secondary-color);
 }
+
+@media  (max-width:1000px) {
+  .imageTop-5{
+    margin-top: 25px;
+  }
+}

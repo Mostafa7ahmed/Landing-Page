@@ -12,9 +12,12 @@ import * as AOS from 'aos';
 })
 export class Home implements AfterViewInit {
   ngAfterViewInit(): void {
-    AOS.init({
-      duration: 1000,
-      once: true,
-    });
+    if (AOS) {
+      AOS.init({
+        duration: 1000,
+        once: true,
+        easing: 'ease-in-out',
+      });
+    }
   }
 }

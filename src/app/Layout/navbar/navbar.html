@@ -1,35 +1,46 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="#">
-      <i class="fas fa-code me-2"></i>
-      برمجيات المستقبل
+    <a class="navbar-brand" [routerLink]="['/home']" fragment="hero">
+     <img src="logo.png" alt="" height="80">
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <button class="menu-toggle d-lg-none" (click)="toggleMenu()" aria-label="فتح القائمة">
+      <i [class]="menuOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="desktop-nav d-none d-lg-block">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#hero">الرئيسية</a>
+          <a class="nav-link" [routerLink]="['/home']" fragment="hero">الرئيسية</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#about">من نحن</a>
+          <a class="nav-link" [routerLink]="['/home']" fragment="about">من نحن</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#services">خدماتنا</a>
+          <a class="nav-link" [routerLink]="['/home']" fragment="services">خدماتنا</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#projects">مشاريعنا</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#contact">اتصل بنا</a>
+          <a class="nav-link" [routerLink]="['/home']" fragment="projects">مشاريعنا</a>
         </li>
       </ul>
     </div>
 
 
-    <a href="#projects" class="btn btn-secondary btn-lg">عرض المشاريع</a>
+    <a [routerLink]="['/home']" fragment="projects" class="btn btn-secondary btn-lg">عرض المشاريع</a>
 
+  </div>
+  
+  <!-- شاشة القائمة الكاملة للجوال -->
+  <div class="overlay-menu" [class.open]="menuOpen" (click)="closeMenu()">
+    <div class="overlay-inner" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeMenu()" aria-label="إغلاق القائمة">
+        <i class="fas fa-times"></i>
+      </button>
+      <ul class="overlay-links list-unstyled m-0">
+        <li><a [routerLink]="['/home']" fragment="hero" (click)="onNavClick()">الرئيسية</a></li>
+        <li><a [routerLink]="['/home']" fragment="about" (click)="onNavClick()">من نحن</a></li>
+        <li><a [routerLink]="['/home']" fragment="services" (click)="onNavClick()">الخدمات</a></li>
+        <li><a [routerLink]="['/home']" fragment="projects" (click)="onNavClick()">المشاريع</a></li>
+      </ul>
+    </div>
   </div>
 </nav>
 
